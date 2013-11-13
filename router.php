@@ -18,10 +18,14 @@ class Router {
 	public function process () {
 		$return = array();
 		foreach ($this->actions as $route => $actions) {
-			if (strpos($actions, $this->sep)) {
-				list($class, $method) 	  = explode($this->sep, $actions);
-				$return[$route]['class']  = $class;
-				$return[$route]['method'] = $method;
+			if (is_callable($actions)) {
+				$return[$route]['closure'] = $actions;
+			} else {
+				if (strpos($actions, $this->sep)) {
+					list($class, $method) 	  = explode($this->sep, $actions);
+					$return[$route]['class']  = $class;
+					$return[$route]['method'] = $method;
+				}
 			}
 		}
 		return $return;
@@ -33,9 +37,14 @@ class Router {
 			$find = '!^'.str_replace(array_keys($patterns), array_values($patterns), $route).'\/?$!';
 			if (preg_match($find, $this->uri, $params)) {
 				array_shift($params);
-				$this->call['class']  = $callback['class'];
-				$this->call['method'] = $callback['method'];
-				$this->call['params'] = $params;
+				if (isset($callback['closure'])) {
+					$this->call['closure'] = $callback['closure'];
+					$this->call['params']  = $params;
+				} else {
+					$this->call['class']  = $callback['class'];
+					$this->call['method'] = $callback['method'];
+					$this->call['params'] = $params;
+				}
 				# Check for request method if set. All methods default with GET so no need to append it
 				if (in_array($_SERVER['REQUEST_METHOD'], $this->alt_request_types)) {
 					$this->call['method'] = $_SERVER['REQUEST_METHOD'].'_'.$this->call['method'];
@@ -43,7 +52,12 @@ class Router {
 			}	
 		}
 		if (!empty($this->call)) {
-			call_user_func_array(array($this->call['class'], $this->call['method']), $this->call['params']);
+			if (isset($this->call['closure'])) {
+				call_user_func_array($this->call['closure'], $this->call['params']);
+			} else {
+				$class = new $this->call['class']; 
+				call_user_func_array(array($class, $this->call['method']), $this->call['params']);
+			}
 		} else {
 			$this->E404();
 		}		

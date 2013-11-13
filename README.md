@@ -58,3 +58,18 @@ By default all requests are found using GET. However, if you need to use an alte
             }                    
             
         }
+        
+## Anonymous Functions / Closures
+
+If you are running PHP >= 5.3 you are now able to pass through an anonymous function instead of linking to a specifc class or controller. It can be helpful for creating some basic functions for an api or debugging some code.
+
+
+    require 'router.php';
+    $router = new Router;
+    $router->actions(array(
+      '/debug/:string/:int' => function ($title, $id) {
+      	echo $title . ' - ' . $id;
+      	exit;
+      }
+    ));
+    $router->execute();
