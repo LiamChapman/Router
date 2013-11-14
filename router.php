@@ -1,4 +1,3 @@
-<?php function p($array) { print '<pre>'; print_r($array); print '</pre>'; } ?>
 <?php
 /**
  * @package Router
