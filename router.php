@@ -138,9 +138,7 @@ class Router {
 	 * Direct request instead of using an action array
 	 */
 	public function request ($route, $callback) {
-		if (is_callable($callback)) {
-			$this->actions[trim($route)] = $callback;
-		}
+		$this->actions[trim($route)] = $callback;
 	}
 	
 	/**
