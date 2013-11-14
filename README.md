@@ -153,7 +153,7 @@ If you are choosing to use this inside a project, but you are also using the rou
 
 For example:
 
-require 'router.php';
+	require 'router.php';
 	
 	$app = new Router;
 	
@@ -164,6 +164,40 @@ require 'router.php';
 	$app->request('/blog/article/:int', 'blog.article');
 	
 	$app->execute();
+	
+If using PHP < 5.4 you'll have to parse through variables to callback scope with 'use' and example can be seen below. In PHP >= 5.4 the use can be kind of optional.
+
+Example:
+
+	require 'router.php';
+	
+	$app = new Router;
+	$db  = new Database; // fake db class
+	
+	$app->get('/test', function () use ($db) {
+		// do stuff here!
+	});
+	
+	$app->execute();
+	
+## Static Calls
+
+Instead of instantiating the class you can optionally do static calls instead.
+
+For example:
+
+	require 'router.php';
+	
+	Router::get('/hello/:string', function ($string) {
+		echo 'Hello ' . $string . '!';
+		exit;
+	});
+	
+	Router::post('/test', 'myclass.mymethod');
+
+If you are using a combination of static calls and instatiating, in your static callbacks make sure to exit(); or die(); other wise a 404 Error will be appended to the output.
+
+*If you inspect the source, you'll notice it isn't truly static, but it works. I may need to rebuild parts of it in the future.*
 	
 Something to remember is if you are using this as a framework, you'll have to use a .htaccess file and run these actions from a new file like an index.php. Below is a basic .htaccess code you can use to get started.
 
@@ -186,3 +220,5 @@ For example:
 	));
 	
 	$router->execute();
+
+With the query string ignored, you should still be able to pass through url paramers.
