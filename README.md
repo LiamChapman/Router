@@ -233,7 +233,7 @@ Inside your index.php file you might have something like this:
 	// start router
 	$router->execute();
 
-* Obviously this is a simple example, you would also use full paths with dirname(__FILE__) or __DIR__*	
+*Obviously this is a simple example, you would also use full paths with dirname(__FILE__) or __DIR__*	
 	
 Inside your config/routes.php you then might have something like this:
 
