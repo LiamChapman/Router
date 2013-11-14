@@ -14,6 +14,11 @@ class Router {
 	 * @var String
 	 */ 
 	 public $query_string;
+	 
+	/**
+	 * @var String
+	 */ 
+	 public $error_document = null;	 
 	
 	/**
 	 * @var Array
@@ -66,7 +71,7 @@ class Router {
 	 * This function processes and sorts our actions to be ready to be executed
 	 */
 	public function process () {
-		$return  = array();		
+		$return = array();		
 		foreach ($this->actions as $route => $actions) {
 			if (is_callable($actions)) {
 				$return[$route]['closure'] = $actions;
@@ -82,10 +87,11 @@ class Router {
 	}
 	
 	/**
+	 * @param $static Boolean - used when called statically to keep running if call is empty.
 	 * When ran this function loops through our actions that have been processed and checks if the URL is valid. 
 	 * Returns a 404 if nothing is found.
 	 */
-	public function execute () {
+	public function execute ($static = false) {
 		foreach ($this->process() as $route => $callback) {
 			$find = '!^'.str_replace(array_keys($this->patterns()), array_values($this->patterns()), $route).'\/?$!';
 			if (preg_match($find, $this->uri, $params)) {
@@ -104,15 +110,17 @@ class Router {
 				}
 			}	
 		}
-		if (!empty($this->call)) {
+		if (!empty($this->call) || $static) {
 			if (isset($this->call['closure'])) {
 				call_user_func_array($this->call['closure'], $this->call['params']);
 			} else {
-				$class = new $this->call['class']; 
-				call_user_func_array(array($class, $this->call['method']), $this->call['params']);
+				if (isset($this->call['class'])) {
+					$class = new $this->call['class']; 
+					call_user_func_array(array($class, $this->call['method']), $this->call['params']);
+				}
 			}			
 		} else {
-			$this->E404();
+			$this->E404($this->error_document);
 		}		
 	}
 	
@@ -154,12 +162,26 @@ class Router {
 	
 	/**
 	 * Magic method to look for direct request methods
-	 * e.g. ->get('/my-uri', function () {}); , ->post('/my-uri', function (){});
+	 * e.g. ->get('/my-uri', function () {}); , ->post('/my-uri', function () {});
 	 */
 	public function __call ($call, $args) {
 		$call = strtoupper($call);
 		if (in_array($call, $this->request_types) && $_SERVER['REQUEST_METHOD'] == $call) {
 			$this->request($args[0], $args[1]);
+		}
+	}
+	
+	/**
+	 * Magic method to look for direct request methods statically
+	 * e.g. Router::get('/my-uri', function () {}); , Router::post('/my-uri', function () {});
+	 * Not truly static...tad hacky. May need to be rethought and built statically.. hmm
+	 */
+	public static function __callStatic ($call, $args) {
+		$call = strtoupper($call);
+		$self = new self();
+		if (in_array($call, $self->request_types) && $_SERVER['REQUEST_METHOD'] == $call) {
+			$self->request($args[0], $args[1]);
+			$self->execute(1);
 		}
 	}
 	
