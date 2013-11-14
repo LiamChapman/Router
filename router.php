@@ -1,3 +1,4 @@
+<?php function p($array) { print '<pre>'; print_r($array); print '</pre>'; } ?>
 <?php
 /**
  * @package Router
@@ -66,7 +67,7 @@ class Router {
 	 * This function processes and sorts our actions to be ready to be executed
 	 */
 	public function process () {
-		$return = array();
+		$return  = array();		
 		foreach ($this->actions as $route => $actions) {
 			if (is_callable($actions)) {
 				$return[$route]['closure'] = $actions;
@@ -86,9 +87,8 @@ class Router {
 	 * Returns a 404 if nothing is found.
 	 */
 	public function execute () {
-		$patterns = $this->patterns();
 		foreach ($this->process() as $route => $callback) {
-			$find = '!^'.str_replace(array_keys($patterns), array_values($patterns), $route).'\/?$!';
+			$find = '!^'.str_replace(array_keys($this->patterns()), array_values($this->patterns()), $route).'\/?$!';
 			if (preg_match($find, $this->uri, $params)) {
 				array_shift($params);
 				if (isset($callback['closure'])) {
@@ -111,7 +111,7 @@ class Router {
 			} else {
 				$class = new $this->call['class']; 
 				call_user_func_array(array($class, $this->call['method']), $this->call['params']);
-			}
+			}			
 		} else {
 			$this->E404();
 		}		
