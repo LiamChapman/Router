@@ -165,9 +165,9 @@ For example:
 	
 	$app->execute();
 	
-If using PHP < 5.4 you'll have to parse through variables to callback scope with 'use' and example can be seen below. In PHP >= 5.4 the use can be kind of optional.
+If you're using PHP < 5.4 you'll have to parse through variables to the callback scope with 'use' an example can be seen below. In PHP >= 5.4 the use can be kind of optional.
 
-Example:
+For example:
 
 	require 'router.php';
 	
@@ -198,7 +198,58 @@ For example:
 If you are using a combination of static calls and instatiating, in your static callbacks make sure to exit(); or die(); other wise a 404 Error will be appended to the output.
 
 *If you inspect the source, you'll notice it isn't truly static, but it works. I may need to rebuild parts of it in the future.*
+
+## How to include this in your project
+
+I'm hoping to at some point package this up for something like composer. But in the mean time to get started I recommend in your own bepoke project autoload this and instatiate it inside a boot/setup/config file.
+
+So for instance if you have an index.php file, which your requests get routed to; you might have a separate routes file to keep your project clean.
+
+Example project directory structure:
+
+- my_project/
+	- config/
+		- routes.php
+	- lib/
+		- router.php
+	- index.php
+	- .htaccess
 	
+Inside your index.php file you might have something like this:
+
+	<?php
+	
+	// other stuff here like constants and settings etc.
+	
+	// autoload your classes - http://php.net/manual/en/function.spl-autoload-register.php
+	spl_autoload_register('your_autoload_function');
+	
+	// instantiate your router
+	$router = new Router;
+	
+	// get routes
+	$router->actions( include_once('config/routes.php') );
+	
+	// start router
+	$router->execute();
+
+* Obviously this is a simple example, you would also use full paths with dirname(__FILE__) or __DIR__*	
+	
+Inside your config/routes.php you then might have something like this:
+
+	<?php
+	
+	return array(
+		'/blog/article/:int' => 'blog.article',
+		'/blog'				 => 'blog.index',
+		'/'					 => 'pages.home'
+	);
+	
+
+*look at other notes below for .htaccess rules!*
+	
+### Other notes
+
 Something to remember is if you are using this as a framework, you'll have to use a .htaccess file and run these actions from a new file like an index.php. Below is a basic .htaccess code you can use to get started.
 
 	AddDefaultCharset utf-8
@@ -206,8 +257,6 @@ Something to remember is if you are using this as a framework, you'll have to us
 	Options +Indexes
 	RewriteEngine On
 	RewriteRule ^(.*)$ index.php?$1 [QSA,L]
-	
-### Other notes
 
 When intialising the router there is the option to ignore the query string as apart of the URI. By default it does. By setting it to false it will append it to the uri so you can create routes that have a query string
 
