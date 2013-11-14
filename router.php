@@ -11,6 +11,11 @@ class Router {
 	public $uri; 
 	
 	/**
+	 * @var String
+	 */ 
+	 public $query_string;
+	
+	/**
 	 * @var Array
 	 */
 	public $actions = array(); 
@@ -28,14 +33,21 @@ class Router {
 	/**
 	 * @var Array
 	 */
-	public $request_types = array('GET','POST', 'HEAD', 'PUT', 'DELETE', 'TRACE', 'CONNECT');
+	public $request_types = array('GET', 'POST', 'HEAD', 'PUT', 'DELETE', 'TRACE', 'CONNECT');
 	
 	/**
 	 * @param $ignore_qs Boolean
-	 * - Optional paramater to ignore quesry string
+	 * - Optional paramater to ignore query string
 	 */
-	public function __construct ($ignore_qs = false) {
-		$this->uri = $ignore_qs ? str_replace('?'. $_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']) : $_SERVER['REQUEST_URI'];	
+	public function __construct ($ignore_qs = true) {
+		if (strpos($_SERVER['REQUEST_URI'], '?') !== false && $ignore_qs) {
+			list($uri, $query_string) = explode('?', $_SERVER['REQUEST_URI']);						
+			$this->uri  		= $uri;
+			$this->query_string = $query_string;
+		} else {
+			$this->uri 			= $_SERVER['REQUEST_URI'];
+			$this->query_string = null;
+		}
 	}
 	
 	/**

@@ -172,3 +172,17 @@ Something to remember is if you are using this as a framework, you'll have to us
 	Options +Indexes
 	RewriteEngine On
 	RewriteRule ^(.*)$ index.php?$1 [QSA,L]
+	
+### Other notes
+
+When intialising the router there is the option to ignore the query string as apart of the URI. By default it does. By setting it to false it will append it to the uri so you can create routes that have a query string
+
+For example:
+
+	$router = new Router(0);
+	
+	$router->actions(array(
+		'/test?var=hello' => 'myclass.mymethod'
+	));
+	
+	$router->execute();
