@@ -201,7 +201,7 @@ If you are using a combination of static calls and instatiating, in your static 
 
 ## How to include this in your project
 
-I'm hoping to at some point package this up for something like composer. But in the mean time to get started I recommend in your own bepoke project autoload this and instatiate it inside a boot/setup/config file.
+This is now available on packagist so you can include this with composer the vendor/package name is "liam-chapman/router". Alternatively to get started you can place it in your own bepoke project autoloader this and instatiate it inside a boot/setup/config file.
 
 So for instance if you have an index.php file, which your requests get routed to; you might have a separate routes file to keep your project clean.
 
