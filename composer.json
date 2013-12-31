@@ -3,7 +3,7 @@
     "authors": {
     	"name": "Liam Chapman"
     },
-    "description": "Simple PHP Router for routing URLs to class methods. Will work with PHP 5.2, but for closure support it needs 5.3"
+    "description": "Simple PHP Router for routing URLs to class methods. Will work with PHP 5.2, but for closure support it needs 5.3",
     "license": "MIT",
     "require": {
         "php": ">=5.2.0",       
