@@ -3,6 +3,9 @@
  * @package Router
  * @author Liam Chapman
  */
+
+namespace Router;
+
 class Router {
 	
 	/**
