@@ -272,4 +272,4 @@ For example:
 	
 	$router->execute();
 
-With the query string ignored, you should still be able to pass through url paramers.
+With the query string ignored, you should still be able to pass through url parameters.
