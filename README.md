@@ -213,7 +213,9 @@ Example project directory structure:
 	- config/
 		- routes.php
 	- lib/
-		- router.php
+		- src/
+			- Router/
+				- router.php
 	- index.php
 	- .htaccess
 	
