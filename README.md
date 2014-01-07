@@ -4,13 +4,15 @@ A Simple PHP Router for mapping loaded Class methods based on matching URI strin
 
 *This script only routes classes, methods or closures. It assumes that your library of classes has already been included or autoloaded*
 
+*This class has been updated to work with composer and now uses a namespace of 'Router'. If you need compatibility with PHP 5.2. Remove the namespace*
+
 ### Basic Usage Example
 
 Below shows a simple example of routing the index to a specific class and method.
 
-    require 'router.php';
+    require 'src/Router/router.php';
    
-    $router = new Router;
+    $router = new Router\Router;
    
     $router->actions(array(
       '/' => 'myclass.mymethod'    
@@ -30,9 +32,9 @@ There are three available parameters for matching URLS
 
 Example of URI: *'/blog/article/test-post/1'*
 
-    require 'router.php';
+    require 'src/Router/router.php';
     
-    $router = new Router;
+    $router = new Router\Router;
     
     $router->actions(array(
       '/blog/article/:string/:int' => 'blog.article'
@@ -75,9 +77,9 @@ If you are running PHP >= 5.3 you are now able to pass through an anonymous func
 
 For example:
 
-    require 'router.php';
+    require 'src/Router/router.php';
    
-    $router = new Router;
+    $router = new Router\Router;
    
     $router->actions(array(
       '/debug/:string/:int' => function ($title, $id) {
@@ -94,9 +96,9 @@ If you do not need to include this class inside a framework or full on project; 
 
 For example:
 
-	require 'router.php';
+	require 'src/Router/router.php';
 	
-	$app = new Router;
+	$app = new Router\Router;
 	
 	$app->request('/test', function () {
 		echo 'Test!';
@@ -108,9 +110,9 @@ By using the magic method __call() inside the class you can create specific requ
 
 For example:
 
-	require 'router.php';
+	require 'src/Router/router.php';
 	
-	$app = new Router;
+	$app = new Router\Router;
 	
 	$app->get('/test', function () {
 		echo 'Test via get!';
@@ -126,9 +128,9 @@ If you need to group actions with the direct request approach, you can still use
 
 For example:
 
-	require 'router.php';
+	require 'src/Router/router.php';
 	
-	$app = new Router;
+	$app = new Router\Router;
 	
 	$app->get('/test', function () {
 		echo 'Test via get!';
@@ -153,9 +155,9 @@ If you are choosing to use this inside a project, but you are also using the rou
 
 For example:
 
-	require 'router.php';
+	require 'src/Router/router.php';
 	
-	$app = new Router;
+	$app = new Router\Router;
 	
 	$app->get('/test', function () {
 		echo 'Test via get!';
@@ -169,9 +171,9 @@ If you're using PHP < 5.4 you'll have to parse through variables to the callback
 
 For example:
 
-	require 'router.php';
+	require 'src/Router/router.php';
 	
-	$app = new Router;
+	$app = new Router\Router;
 	$db  = new Database; // fake db class
 	
 	$app->get('/test', function () use ($db) {
@@ -186,7 +188,7 @@ Instead of instantiating the class you can optionally do static calls instead.
 
 For example:
 
-	require 'router.php';
+	require 'src/Router/router.php';
 	
 	Router::get('/hello/:string', function ($string) {
 		echo 'Hello ' . $string . '!';
@@ -225,7 +227,7 @@ Inside your index.php file you might have something like this:
 	spl_autoload_register('your_autoload_function');
 	
 	// instantiate your router
-	$router = new Router;
+	$router = new Router\Router;
 	
 	// get routes
 	$router->actions( include_once('config/routes.php') );
@@ -262,7 +264,7 @@ When intialising the router there is the option to ignore the query string as ap
 
 For example:
 
-	$router = new Router(0);
+	$router = new Router\Router(0);
 	
 	$router->actions(array(
 		'/test?var=hello' => 'myclass.mymethod'
